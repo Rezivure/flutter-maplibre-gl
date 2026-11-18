@@ -2317,6 +2317,11 @@ final class MapLibreMapController
     if (disposed || mapView == null) {
       return;
     }
+    // onResume starts the controller's own location listener for
+    // onUserLocationUpdated; without stopping it here it outlived the map
+    // and kept a 1 s location request running while the app was in the
+    // background, for as long as the process lived.
+    stopListeningForLocationUpdates();
     if (mapViewStarted) {
       mapView.onStop();
       mapViewStarted = false;
